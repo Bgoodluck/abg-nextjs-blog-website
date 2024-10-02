@@ -21,7 +21,7 @@
 module.exports = {
   important: true,
   content: [
-    "./src/**/*.{js, ts, jsx, tsx}",
+    "./id/**/*.{js, ts, jsx, tsx}",
     "./Pages/**/*.{js,ts,jsx,tsx}",
     "./Components/**/*.{js,ts,jsx,tsx}",
     "./app/**/*.{js,ts,jsx,tsx}",
