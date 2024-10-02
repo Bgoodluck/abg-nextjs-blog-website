@@ -90,19 +90,29 @@
 
 
 'use client'
-
-// Import necessary modules
-import { assets } from '@/assets/assets';
+import { assets, blog_data } from '@/assets/assets';
 import Footer from '@/Components/Footer';
 import axios from 'axios';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 
-// The Page component that renders a single blog post
-function Page({ blogData }) {
+function Page({params}) {
+    const [data, setData] = useState(null);
+
+    const fetchBlogData = useCallback(async () => {
+        const response = await axios.get('/api/blog', {
+            params: { id: params.id }
+        });
+        setData(response.data);
+    }, [params.id]);
+
+    useEffect(() => {
+        fetchBlogData();
+    }, [fetchBlogData]);
+
     return (
-        blogData ? (
+        data ? (
             <>
                 <div className='bg-gray-200 py-5 px-5 md:px-12 lg:px-28'>
                     <div className='flex justify-between items-center'>
@@ -114,14 +124,14 @@ function Page({ blogData }) {
                         </button>
                     </div>
                     <div className='text-center my-24'>
-                        <h1 className='text-2xl sm:text-5xl font-semibold max-w-[700px] mx-auto'>{blogData.title}</h1>
-                        <Image src={blogData.authorImg} width={60} height={60} alt='Author image' className='mx-auto mt-6 border border-white rounded-full' />
-                        <p className='mt-1 pb-2 text-lg max-w-[740px] mx-auto'>{blogData.author}</p>
+                        <h1 className='text-2xl sm:text-5xl font-semibold max-w-[700px] mx-auto'>{data.title}</h1>
+                        <Image src={data.authorImg} width={60} height={60} alt='Author image' className='mx-auto mt-6 border border-white rounded-full' />
+                        <p className='mt-1 pb-2 text-lg max-w-[740px] mx-auto'>{data.author}</p>
                     </div>
                 </div>
                 <div className='mx-5 max-w-[800px] md:mx-auto mt-[-100px] mb-10'>
-                    <Image src={blogData.image} width={1280} height={720} alt='Blog main image' className='border-4 border-white' />
-                    <div className='blog-content' dangerouslySetInnerHTML={{ __html: blogData.description }}></div>
+                    <Image src={data.image} width={1280} height={720} alt='Blog main image' className='border-4 border-white' />
+                    <div className='blog-content' dangerouslySetInnerHTML={{ __html: data.description }}></div>
                     <div className='my-24'>
                         <p className='text-black font-semibold my-4'>Share this article on social media</p>
                         <div className='flex'>
@@ -135,33 +145,6 @@ function Page({ blogData }) {
             </>
         ) : null
     );
-}
-
-// Define the dynamic paths to generate at build time
-export async function getStaticPaths() {
-    // Fetch the list of blog IDs (or slugs) to pre-generate
-    const res = await axios.get('https://abg-nextjs-blog-website.vercel.app/api/blog-ids'); // Replace with your API to fetch blog IDs
-    const blogs = res.data;
-
-    // Map blog IDs to paths
-    const paths = blogs.map(blog => ({
-        params: { id: blog.id.toString() }  // Convert id to string if it's a number
-    }));
-
-    return { paths, fallback: false };  // fallback: false means any other routes will return a 404
-}
-
-// Fetch data for each blog post at build time
-export async function getStaticProps({ params }) {
-    // Fetch the specific blog data based on the ID from params
-    const res = await axios.get(`https://abg-nextjs-blog-website.vercel.app/api/blog/${params.id}`);
-    const blogData = res.data;
-
-    return {
-        props: {
-            blogData,  // Pass the blog data as props to the component
-        },
-    };
 }
 
 export default Page;
