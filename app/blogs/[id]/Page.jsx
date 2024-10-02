@@ -140,7 +140,7 @@ function Page({ blogData }) {
 // Define the dynamic paths to generate at build time
 export async function getStaticPaths() {
     // Fetch the list of blog IDs (or slugs) to pre-generate
-    const res = await axios.get('https://your-api-url.com/api/blog-ids'); // Replace with your API to fetch blog IDs
+    const res = await axios.get('https://abg-nextjs-blog-website.vercel.app/api/blog-ids'); // Replace with your API to fetch blog IDs
     const blogs = res.data;
 
     // Map blog IDs to paths
@@ -154,7 +154,7 @@ export async function getStaticPaths() {
 // Fetch data for each blog post at build time
 export async function getStaticProps({ params }) {
     // Fetch the specific blog data based on the ID from params
-    const res = await axios.get(`https://your-api-url.com/api/blog/${params.id}`);
+    const res = await axios.get(`https://abg-nextjs-blog-website.vercel.app/api/blog/${params.id}`);
     const blogData = res.data;
 
     return {
