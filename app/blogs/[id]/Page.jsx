@@ -23,7 +23,7 @@ function Page({params}) {
 
     useEffect(()=>{
         fetchBlogData();
-    },[fetchBlogData])
+    },[]);
 
 
 
